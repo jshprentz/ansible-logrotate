@@ -124,12 +124,11 @@ SCRIPT_TEMPLATE = """
 
 
 def _compare_config(config, config_path):
-    current_run_md5 = hashlib.md5(config).hexdigest()
+    current_run_md5 = hashlib.md5(config.encode('utf-8')).hexdigest()
     on_disk_md5 = None
     with open(config_path) as f:
         data = f.read()
-        on_disk_md5 = hashlib.md5(data).hexdigest()
-
+        on_disk_md5 = hashlib.md5(data.encode('utf-8')).hexdigest()
     return on_disk_md5 == current_run_md5
 
 
@@ -152,7 +151,7 @@ def _get_config(module):
     options = module.params.get('options')
     scripts = module.params.get('scripts', {})
     scripts = [SCRIPT_TEMPLATE.format(name=k, script=v)
-               for (k, v) in scripts.iteritems()]
+               for (k, v) in scripts.items()]
 
     template = TEMPLATE.format(path=path,
                                options='\n  '.join(options),
